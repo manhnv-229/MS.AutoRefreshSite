@@ -146,8 +146,10 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (!state || !state.active) return;
 
   try {
-    // Refresh tab
-    await chrome.tabs.reload(tabId);
+    // Dùng tabs.update thay vì tabs.reload để tránh dialog "Confirm Form Resubmission"
+    // khi trang được load bằng POST request
+    const tab = await chrome.tabs.get(tabId);
+    await chrome.tabs.update(tabId, { url: tab.url });
 
     // Cập nhật refresh count
     refreshStates[tabId].refreshCount = (state.refreshCount || 0) + 1;
