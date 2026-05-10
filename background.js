@@ -146,9 +146,12 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (!state || !state.active) return;
 
   try {
-    // Dùng tabs.update thay vì tabs.reload để tránh dialog "Confirm Form Resubmission"
-    // khi trang được load bằng POST request
+    // Lấy thông tin tab hiện tại để có URL mới nhất
     const tab = await chrome.tabs.get(tabId);
+
+    // Sử dụng tabs.update thay vì reload để tránh lỗi "Confirm Form Resubmission" 
+    // khi trang web được nạp bằng phương thức POST (ví dụ sau khi gửi form).
+    // Điều này giúp quá trình auto-refresh diễn ra mượt mà không bị ngắt quãng bởi hộp thoại hệ thống.
     await chrome.tabs.update(tabId, { url: tab.url });
 
     // Cập nhật refresh count
